@@ -1,0 +1,62 @@
+Packages
+	.Install("bootstrap", "[3.3.5]")
+	.Install("jQuery", "[2.1.1]");
+
+===
+using Wyam.Modules.Razor.Microsoft.AspNet.Mvc.Rendering;
+
+public static class HtmlHelperExtensions
+{		
+	public static HtmlString Name(this IMetadata metadata)
+	{
+		string name = metadata.String("DisplayName");
+        return name == null 
+			? new HtmlString(string.Empty) 
+			: new HtmlString(System.Net.WebUtility.HtmlEncode(name.ToString()).ToString()
+				.Replace(".", "<wbr>.")
+				.Replace("(", "<wbr>(")
+				.Replace(")", ")<wbr>")
+				.Replace("&lt;", "<wbr>&lt;")
+				.Replace("&gt;", "&gt;<wbr>"));		
+	}
+	
+	public static HtmlString Link(this IMetadata metadata)
+	{
+		if(metadata.String("Kind") == "TypeParameter")
+		{
+			IDocument declaringType = metadata.Get<IDocument>("DeclaringType");
+			if(declaringType != null)
+			{			
+				return declaringType.ContainsKey("WritePath")
+					? new HtmlString($"<a href=\"{declaringType.Link("WritePath")}#typeparam-{metadata["Name"]}\">{metadata.Name()}</a>")
+					: metadata.Name();
+			}
+		} 
+		return metadata.ContainsKey("WritePath")
+			? new HtmlString($"<a href=\"{metadata.Link("WritePath")}\">{metadata.Name()}</a>")
+			: metadata.Name();
+	}
+}
+
+public class DocsTable
+{
+	public IList<IDocument> Docs { get; set; }
+	public string Title { get; set; }
+	public string Header { get; set; }
+	public bool HasSummary { get; set; }
+}
+
+---
+
+Pipelines.Add("Code",
+	ReadSolution(@"..\Nancy\Nancy.sln")
+		.WhereProject(x => !x.Contains(".Demo.") && !x.EndsWith(".Tests")),
+	AnalyzeCSharp()
+		.WithCssClasses("pre", "prettyprint"),
+	Razor(),
+	WriteFiles()
+);
+
+Pipelines.Add("Resources",
+	CopyFiles("*").WithoutExtensions(".cshtml", ".md")
+);

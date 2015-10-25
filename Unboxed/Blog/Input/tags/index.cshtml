@@ -1,0 +1,40 @@
+Title: All Tags
+---
+@using FluentBootstrap;
+
+@{    
+	var DocumentsByTag = Documents
+        .ContainsKey("Published")
+        .ToLookup<string>("Tags");
+	string Tag = Model.Get<string>("Tag", null);
+}
+
+@using (Bs.Div().AddCss("container-sm-height").Begin())
+{
+    using (var row = Bs.GridRow().AddCss("row-sm-height").Begin())
+    {
+        if (Tag != null)
+        {
+            using (row.GridColumn().SetSm(8).AddCss("right-border", "col-sm-height").Begin())
+            {            
+                ViewData["PostListDocuments"] = DocumentsByTag[Tag]
+                    .OrderByDescending(x => x.Get<DateTime>("Published"));
+                @Html.Partial("_PostList");
+                <hr class="@Css.VisibleXsBlock" />
+            }
+        }
+		
+        using (row.GridColumn().SetSm(Tag == null ? 12 : 4).AddCss("col-sm-height").Begin())
+        {
+            foreach (var tagDocuments in DocumentsByTag.OrderBy(x => x.Key))
+            {
+                var tagButton = Html.TagButton(tagDocuments.Key, tagDocuments.Count(), tagDocuments.Key == Tag ? ButtonState.Primary : ButtonState.Default);
+                if(Tag != null)
+                {
+                    tagButton.SetSize(ButtonSize.Xs);
+                }
+                @tagButton
+            }
+        }
+    }
+}

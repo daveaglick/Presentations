@@ -1,0 +1,26 @@
+Packages
+	.Install("bootstrap", "[3.3.5]")
+	.Install("jQuery", "[2.1.1]");
+
+===
+
+Pipelines.Add("Posts",
+	ReadFiles(@"posts\*.md"),  // Read all markdown files in the "posts" directory
+	FrontMatter(Yaml()),  // Load any frontmatter and parse it as YAML markup
+	Markdown(),  // Render the markdown content
+	Razor(),  // Compile and render the layout template with the Markdown content	
+	WriteFiles(".html")  // Write the files with an .html extension
+);
+
+Pipelines.Add("Home",
+	ReadFiles(@"*.cshtml")
+	    .FromTopDirectoryOnly()
+		.Where(x => Path.GetFileName(x)[0] != '_'),
+	FrontMatter(Yaml()),
+	Razor(),
+	WriteFiles(".html")
+);
+
+Pipelines.Add("Resources",
+	CopyFiles("*").WithoutExtensions(".cshtml", ".md")
+);

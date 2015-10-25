@@ -1,0 +1,14 @@
+Title: API
+---
+@{
+	ViewData["DocsTable"] = new DocsTable
+	{
+		Docs = Documents.FromPipeline("API")
+			.Where(x => x.String("Kind") == "Namespace")
+			.OrderBy(x => x.String("DisplayName"))
+			.ToList(),
+		Title = "Namespaces",
+		Header = "Namespace"	
+	};
+	@Html.Partial("Partials\\Section\\_DocsTable");
+}  
