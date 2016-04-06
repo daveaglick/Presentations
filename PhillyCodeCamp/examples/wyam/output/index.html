@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Adventure Time!</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Adventure Time is an American animated television series created by Pendleton Ward for Cartoon Network. The series follows the adventures of Finn, a human boy, and his best friend and adoptive brother Jake, a dog with magical powers to change shape and grow and shrink at will. Finn and Jake live in the post-apocalyptic Land of Ooo. Along the way, they interact with the other main characters of the show: Princess Bubblegum, The Ice King, and Marceline the Vampire Queen." />
+    
+    <meta name="keywords" content="adventure time,cartoon network,cartoons,finn,jake,princess bubblegum" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/init.js"></script>
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-desktop.css" />
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <link rel="alternate" type="application/rss+xml" title="Adventure Time!" href="feed.xml" />
+</head>
+
+  <body>
+
+    <!-- Header -->
+<div id="header-wrapper">
+    <div id="header">
+        <!-- Logo -->
+        <h1><a href="/">Adventure Time!</a></h1>
+            <!-- Banner -->
+            <section id="banner">
+                <header>
+                    <h2>Explore the Land of Ooo...</h2>
+                    <p>...and its many kingdoms!</p>
+                </header>
+            </section>
+    </div>
+</div>
+
+
+    <!-- Main -->
+    <div id="main-wrapper">
+        <div class="container">
+            <div class="row">
+    <div class="12u">
+
+        <!-- Characters -->
+            <section>
+                <header class="major">
+                    <h2>Characters</h2>
+                </header>
+                <div class="row">
+                {% for character in site.data.characters %}
+                    <div class="4u">
+                        <section class="box">
+                            <span class="image featured"><img src="{{character.image}}" alt="" /></span>
+                            <header>
+                                <h3>{{character.name}}</h3>
+                            </header>
+                            <p>{{character.description}}</p>
+                        </section>
+                    </div>
+                {% endfor %}
+                </div>
+            </section>
+
+    </div>
+</div>
+<div class="row">
+    <div class="12u">
+
+        <!-- Blog -->
+            <section>
+                <header class="major">
+                    <h2>Recent Episodes</h2>
+                </header>
+                <div class="row">
+                {% for post in site.posts limit:2 %}
+                    <div class="6u">
+                        <section class="box">
+                            <a href="{{ post.url | prepend: site.baseurl }}" class="image featured"><img src="{{ post.banner | prepend: site.baseurl }}" alt="" /></a>
+                            <header>
+                                <h3>{{ post.title }}</h3>
+                                <p>Posted {{ post.date | date: "%b %-d, %Y" }}</p>
+                            </header>
+                            <p>{{ post.excerpt }}</p>
+                            <footer>
+                                <ul class="actions">
+                                    <li><a href="{{ post.url | prepend: site.baseurl }}" class="button icon fa-file-text">Continue Reading</a></li>
+                                </ul>
+                            </footer>
+                        </section>
+                    </div>
+                {% endfor %}
+                </div>
+            </section>
+
+    </div>
+</div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+<div id="footer-wrapper">
+    <section id="footer" class="container">
+        <div class="row">
+            <div class="8u">
+                <section>
+                    <header>
+                        <h2>More Episodes</h2>
+                    </header>
+                    <ul class="dates">
+                    {{#each episodes}}
+                        <li>
+                            <!-- this is a really bad idea, but a temporary hack -->
+                            <span class="date"><script>document.write("{{ date }}".split(" ")[0]);</script><strong><script>document.write("{{ date }}".split(",")[0].split(" ")[1]);</script></strong></span>
+                            <h3><a href="{{ path }}">{{ title }}</a></h3>
+                            <p>{{ shortdesc }}</p>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </section>
+            </div>
+            <div class="4u">
+                <section>
+                    <header>
+                        <h2>What's this all about?</h2>
+                    </header>
+                    <a href="#" class="image featured"><img src="/images/about.jpg" alt="" /></a>
+                    <p>Adventure Time is an American animated television series created by Pendleton Ward for Cartoon Network. The series follows the adventures of Finn, a human boy, and his best friend and adoptive brother Jake, a dog with magical powers to change shape and grow and shrink at will. Finn and Jake live in the post-apocalyptic Land of Ooo. Along the way, they interact with the other main characters of the show: Princess Bubblegum, The Ice King, and Marceline the Vampire Queen.</p>
+                </section>
+            </div>
+        </div>
+        <div class="row">
+            <div class="12u">
+
+                <!-- Copyright -->
+                    <div id="copyright">
+                        <ul class="links">
+                            <li>&copy; Adventure Time!. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                        </ul>
+                    </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+
+  </body>
+
+</html>
