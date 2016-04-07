@@ -7,17 +7,18 @@
                     <h2>Characters</h2>
                 </header>
                 <div class="row">
-                {% for character in site.data.characters %}
+                @foreach(IDocument character in Documents["Characters"].OrderBy(x => x["name"]))
+                {                
                     <div class="4u">
                         <section class="box">
-                            <span class="image featured"><img src="{{character.image}}" alt="" /></span>
+                            <span class="image featured"><img src="@character["image"]" alt="" /></span>
                             <header>
-                                <h3>{{character.name}}</h3>
+                                <h3>@character["name"]</h3>
                             </header>
-                            <p>{{character.description}}</p>
+                            <p>@character["description"]</p>
                         </section>
                     </div>
-                {% endfor %}
+                }
                 </div>
             </section>
 
@@ -27,30 +28,31 @@
     <div class="12u">
 
         <!-- Blog -->
-            <section>
-                <header class="major">
-                    <h2>Recent Episodes</h2>
-                </header>
-                <div class="row">
-                {% for post in site.posts limit:2 %}
+        <section>
+            <header class="major">
+                <h2>Recent Episodes</h2>
+            </header>
+            <div class="row">
+                @foreach(IDocument post in Documents["Content"].Where(x => x.String("collection") == "featured"))
+                {
                     <div class="6u">
                         <section class="box">
-                            <a href="{{ post.url | prepend: site.baseurl }}" class="image featured"><img src="{{ post.banner | prepend: site.baseurl }}" alt="" /></a>
+                            <a href="@post.FilePath("RelativeFilePath").ChangeExtension("html").ToLink()" class="image featured"><img src="@post["banner"]" alt="" /></a>
                             <header>
-                                <h3>{{ post.title }}</h3>
-                                <p>Posted {{ post.date | date: "%b %-d, %Y" }}</p>
+                                <h3>@post["title"]</h3>
+                                <p>Posted @post["date"]</p>
                             </header>
-                            <p>{{ post.excerpt }}</p>
+                            <p>@Html.Raw(post["Excerpt"])</p>
                             <footer>
                                 <ul class="actions">
-                                    <li><a href="{{ post.url | prepend: site.baseurl }}" class="button icon fa-file-text">Continue Reading</a></li>
+                                    <li><a href="@post.FilePath("RelativeFilePath").ChangeExtension("html").ToLink()" class="button icon fa-file-text">Continue Reading</a></li>
                                 </ul>
                             </footer>
                         </section>
                     </div>
-                {% endfor %}
-                </div>
-            </section>
+                }
+            </div>
+        </section>
 
     </div>
 </div>

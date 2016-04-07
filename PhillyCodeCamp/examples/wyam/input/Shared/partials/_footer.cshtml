@@ -8,14 +8,15 @@
                         <h2>More Episodes</h2>
                     </header>
                     <ul class="dates">
-                    {{#each episodes}}
+                    @foreach(IDocument post in Documents["Content"].Where(x => x.String("collection") == "episodes"))
+                    {
                         <li>
                             <!-- this is a really bad idea, but a temporary hack -->
-                            <span class="date"><script>document.write("{{ date }}".split(" ")[0]);</script><strong><script>document.write("{{ date }}".split(",")[0].split(" ")[1]);</script></strong></span>
-                            <h3><a href="{{ path }}">{{ title }}</a></h3>
-                            <p>{{ shortdesc }}</p>
+                            <span class="date"><script>document.write("@post["date"]".split(" ")[0]);</script><strong><script>document.write("@post["date"]".split(",")[0].split(" ")[1]);</script></strong></span>
+                            <h3><a href="@post.FilePath("RelativeFilePath").ChangeExtension("html").ToLink()">@post["title"]</a></h3>
+                            <p>@post["shortdesc"]</p>
                         </li>
-                    {{/each}}
+                    }
                     </ul>
                 </section>
             </div>
