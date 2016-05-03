@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Output>DataGrids</Output>
-  <NuGetReference Prerelease="true">Microsoft.CodeAnalysis.Compilers</NuGetReference>
+  <NuGetReference>Microsoft.CodeAnalysis.Compilers</NuGetReference>
   <Namespace>Microsoft.CodeAnalysis.CSharp</Namespace>
   <Namespace>Microsoft.CodeAnalysis.CSharp.Syntax</Namespace>
 </Query>

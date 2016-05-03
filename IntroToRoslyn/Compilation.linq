@@ -1,6 +1,6 @@
 <Query Kind="Statements">
   <Output>DataGrids</Output>
-  <NuGetReference Prerelease="true">Microsoft.CodeAnalysis.Compilers</NuGetReference>
+  <NuGetReference>Microsoft.CodeAnalysis.Compilers</NuGetReference>
   <Namespace>Microsoft.CodeAnalysis</Namespace>
   <Namespace>Microsoft.CodeAnalysis.CSharp</Namespace>
 </Query>
@@ -14,7 +14,7 @@ var syntaxTree = CSharpSyntaxTree.ParseText(@"
 	}
 ");
 
-var mscorlib = MetadataReference.CreateFromAssembly(typeof(object).Assembly);
+var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
 var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
 var compilation = CSharpCompilation.Create("MyAssembly").AddSyntaxTrees(syntaxTree).AddReferences(mscorlib).WithOptions(options);
 using(var stream = new MemoryStream())

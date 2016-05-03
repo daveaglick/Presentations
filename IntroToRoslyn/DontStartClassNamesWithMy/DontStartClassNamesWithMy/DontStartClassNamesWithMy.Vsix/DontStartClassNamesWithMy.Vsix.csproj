@@ -10,11 +10,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{D57C824F-44D3-47DB-A5FE-14443C4AB07C}</ProjectGuid>
+    <ProjectGuid>{9EE55768-08B3-4200-9DFC-341C3984805E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DontStartClassNamesWithMyAnalyzer</RootNamespace>
-    <AssemblyName>DontStartClassNamesWithMyAnalyzer</AssemblyName>
+    <RootNamespace>DontStartClassNamesWithMy.Vsix</RootNamespace>
+    <AssemblyName>DontStartClassNamesWithMy.Vsix</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
@@ -47,15 +47,14 @@
     <StartArguments>/rootsuffix Roslyn</StartArguments>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DontStartClassNamesWithMyAnalyzer\DontStartClassNamesWithMyAnalyzer.csproj">
-      <Project>{5EE2EB8D-960A-4123-AE5A-AD53C3FEF94C}</Project>
-      <Name>DontStartClassNamesWithMyAnalyzer</Name>
+    <ProjectReference Include="..\DontStartClassNamesWithMy\DontStartClassNamesWithMy.csproj">
+      <Project>{DCB1FF41-3375-4BFE-BF3C-A7058D978567}</Project>
+      <Name>DontStartClassNamesWithMy</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

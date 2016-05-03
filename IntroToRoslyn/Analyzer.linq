@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Output>DataGrids</Output>
-  <NuGetReference Prerelease="true">Microsoft.CodeAnalysis.Compilers</NuGetReference>
+  <NuGetReference>Microsoft.CodeAnalysis.Compilers</NuGetReference>
   <Namespace>Microsoft.CodeAnalysis</Namespace>
   <Namespace>Microsoft.CodeAnalysis.CSharp</Namespace>
   <Namespace>Microsoft.CodeAnalysis.Diagnostics</Namespace>
@@ -20,7 +20,7 @@ async Task Main()
 		}
 	");
 	
-	var mscorlib = MetadataReference.CreateFromAssembly(typeof(object).Assembly);
+	var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
 	var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
 	DiagnosticAnalyzer analyzer = new DontStartClassNamesWithMyAnalyzer();
 	var compilation = CSharpCompilation.Create("MyAssembly")
