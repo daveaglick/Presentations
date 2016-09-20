@@ -9,6 +9,8 @@ The following is a chronological list of talks I've given:
 - 4/9/2016: Cutting Through The Static (Philly Code Camp)
 - 4/30/2016: I Open Source, And So Can You! (NoVa Code Camp)
 - 5/4/2016: .NET Compiler Platform, What Can It Do For Me? (Microsoft Maniacs User Group)
+- 7/11/2016: Lightning Talk - Giving Back: Your First Pull Request (.NET Fringe)
+- 9/20/2016: I Open Source, And So Can You! (.NET DC User Group)
 
 # License
 Generally, this work is licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/). Individual presentations, content, code, etc. may be subject to different licenses as indicated.
