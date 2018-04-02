@@ -10,10 +10,27 @@
 
 		<link rel="stylesheet" href="../reveal/css/reveal.css">
         <link rel="stylesheet" href="../reveal/css/theme/white.css" id="theme">
+        <link rel="stylesheet" href="../reveal/lib/css/zenburn-mark.css" id="theme">
         <style>
             img {
                 border: none !important;
                 box-shadow: none !important;
+            }
+            #left {
+                left:-8.33%;
+                text-align: left;
+                float: left;
+                width:50%;
+                z-index:-10;
+            }
+
+            #right {
+                left:31.25%;
+                top: 75px;
+                float: right;
+                text-align: right;
+                z-index:-10;
+                width:50%;
             }
         </style>
 	</head>
@@ -35,21 +52,22 @@
                     <h2>What Is Blazor?</h2>
                     <blockquote>"Blazor is an experimental .NET web framework using C#/Razor and HTML that runs in the browser with WebAssembly"</blockquote>
                     <p>https://github.com/aspnet/Blazor</p>
+                    <p>Still experimental, everything in this presentation is subject to change</p>
                 </section>
                 
                 <section>
                     <h2>What Is WebAssembly?</h2>
-                    <blockquote>"WebAssembly (abbreviated Wasm) is a binary instruction format for a stack-based virtual machine."</blockquote>
+                    <blockquote>"WebAssembly (abbreviated Wasm) is a binary instruction format for a stack-based virtual machine"</blockquote>
                 </section>
 
                 <section>
-                    <h2>Blazor Architecture *</h2>
+                    <h2>Blazor Architecture</h2>
                     <ul>
                         <li>The Mono C runtime is compiled to WebAssembly</li>
                         <li>The Mono IL interpreter is used to evaluate .NET assemblies</li>
                         <li>Blazor files are compiled to normal .NET assemblies</li>
+                        <li>Templates based on Razor Pages</li>
                     </ul>
-                    <p>* Subject to change</p>
                 </section>
 
                 <section>
@@ -65,6 +83,12 @@
                 <section>
                     <h2>How Blazor Works</h2>
                     <img src="blazor.svg">
+                </section>
+
+                <section>
+                    <h2>Analogy</h2>
+                    <h3>React, Angular, Vue.js</h3>
+                    <p>Most of the "magic" is being done by WebAssembly and Mono, which are totally distinct from Blazor</p>
                 </section>
                 
                 <section>
@@ -90,6 +114,130 @@
                         <li>Blazor pages invoke the callback with required DOM changes</li>
                     </ul>
                 </section>
+
+                <section>
+                    <h2>Getting Started: Prerequisites</h2>
+                    <ul>
+                        <li>.NET Core 2.1 preview</li>
+                        <li>Visual Studio 2017 15.7 preview (for VS support)</li>
+                        <li>ASP.NET Core Blazor Language Services (for VS support)</li>
+                        <li>Microsoft.AspNetCore.Blazor.Templates (for .NET Core templates)</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h2>Visual Studio</h2>
+                    <p style="font-size: 50%">File -> New Project -> Web -> ASP.NET Core Web Application</p>
+                    <img src="vstemplate.png" style="width: 50%">
+                </section>
+
+                <section>
+                    <h2>CLI/Visual Studio Code</h2>
+                    <pre><code class="console dim" data-trim data-noescape>
+                        ><mark>dotnet new -i Microsoft.AspNetCore.Blazor.Templates</mark>
+                        Getting ready...
+                            Restoring packages for C:\Users\dglick\.templateengine\dotnetcli\v2.1.300-preview1-008174\scratch\restore.csproj...
+                            Installing Microsoft.AspNetCore.Blazor.Templates 0.1.0.
+                            Generating MSBuild file C:\Users\dglick\.templateengine\dotnetcli\v2.1.300-preview1-008174\scratch\obj\restore.csproj.nuget.g.props.
+                            Generating MSBuild file C:\Users\dglick\.templateengine\dotnetcli\v2.1.300-preview1-008174\scratch\obj\restore.csproj.nuget.g.targets.
+                            Restore completed in 1.18 min for C:\Users\dglick\.templateengine\dotnetcli\v2.1.300-preview1-008174\scratch\restore.csproj.
+
+                        Templates                            Short Name        Language          Tags
+                        ----------------------------------------------------------------------------------------------
+                        ...
+                        <mark>Blazor (hosted in ASP.NET server)    blazorhosted      [C#]              Web/Blazor/Hosted</mark>
+                        <mark>Blazor (standalone)                  blazor            [C#]              Web/Blazor/Standalone</mark>
+                        ...
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>CLI/Visual Studio Code</h2>
+                    <pre><code class="console" data-trim data-noescape>
+                        dotnet new blazor -o BlazorApp1
+                        cd BlazorApp1
+                        dotnet run
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Project File</h2>
+                    <pre><code class="xml dim" data-trim data-noescape>
+                        &lt;Project Sdk=&quot;Microsoft.NET.Sdk.Web;Microsoft.NET.Sdk.Razor/2.1.0-preview2-30230&quot;&gt;
+
+                        &lt;PropertyGroup&gt;
+                            &lt;TargetFramework&gt;netstandard2.0&lt;/TargetFramework&gt;
+                            &lt;RunCommand&gt;dotnet&lt;/RunCommand&gt;
+                            &lt;RunArguments&gt;blazor serve&lt;/RunArguments&gt;
+                        &lt;/PropertyGroup&gt;
+                        
+                        &lt;ItemGroup&gt;
+                            <mark>&lt;PackageReference Include=&quot;Microsoft.AspNetCore.Razor.Design&quot; Version=&quot;2.1.0-preview2-30230&quot; PrivateAssets=&quot;all&quot; /&gt;
+                            &lt;PackageReference Include=&quot;Microsoft.AspNetCore.Blazor.Browser&quot; Version=&quot;0.1.0&quot; PrivateAssets=&quot;all&quot; /&gt;
+                            &lt;PackageReference Include=&quot;Microsoft.AspNetCore.Blazor.Build&quot; Version=&quot;0.1.0&quot; /&gt;</mark>
+                            &lt;DotNetCliToolReference Include=&quot;Microsoft.AspNetCore.Blazor.Cli&quot; Version=&quot;0.1.0&quot; /&gt;
+                        &lt;/ItemGroup&gt;
+                        
+                        &lt;/Project&gt;
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Packages</h2>
+                    <ul>
+                        <li><strong>Microsoft.AspNetCore.Razor.Design</strong><br/>Design-time support (Intellisense, etc.)</li>
+                        <li><strong>Microsoft.AspNetCore.Blazor.Browser</strong><br/>Blazor client framework to be deployed to browser</li>
+                        <li><strong>Microsoft.AspNetCore.Blazor.Build</strong><br/>SDK and other build tooling</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h2>What Does It Build?</h2>
+                    <div id="left">
+                        <img src="dist1.png">
+                    </div>
+                    <div id="right">
+                        <img src="dist2.png">
+                    </div>
+                </section>
+
+                <section>
+                    <h2>BlazorApp.dll</h2>
+                    <img src="assembly.png">
+                </section>
+
+                <section>
+                    <h2>index.html</h2>
+                    <pre><code class="html" data-trim>
+                            &lt;!DOCTYPE html&gt;
+                            &lt;html&gt;
+                                &lt;head&gt;
+                                    &lt;meta charset=&quot;utf-8&quot; /&gt;
+                                    &lt;title&gt;BlazorApp&lt;/title&gt;
+                                    &lt;base href=&quot;/&quot; /&gt;
+                                    &lt;link href=&quot;css/bootstrap/bootstrap.min.css&quot; rel=&quot;stylesheet&quot; /&gt;
+                                    &lt;link href=&quot;css/site.css&quot; rel=&quot;stylesheet&quot; /&gt;
+                                &lt;/head&gt;
+                                &lt;body&gt;
+                                    &lt;app&gt;Loading...&lt;/app&gt;
+                            
+                                    &lt;script src=&quot;css/bootstrap/bootstrap-native.min.js&quot;&gt;&lt;/script&gt;
+                                    &lt;script
+                                        src=&quot;_framework/blazor.js&quot;
+                                        main=&quot;BlazorApp.dll&quot;
+                                        entrypoint=&quot;BlazorApp.Program::Main&quot;
+                                        references=&quot;Microsoft.AspNetCore.Blazor.Browser.dll,Microsoft.AspNetCore.Blazor.dll,Microsoft.Extensions.DependencyInjection.Abstractions.dll,Microsoft.Extensions.DependencyInjection.dll,mscorlib.dll,netstandard.dll,System.Core.dll,System.Diagnostics.StackTrace.dll,System.dll,System.Globalization.Extensions.dll,System.Net.Http.dll,System.Runtime.Serialization.Primitives.dll,System.Security.Cryptography.Algorithms.dll&quot;
+                                        linker-enabled=&quot;true&quot;&gt;
+                                    &lt;/script&gt;
+                                &lt;/body&gt;
+                            &lt;/html&gt;
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h1>Digging Deeper...</h1>
+                    <p>Time for some demos!</p>
+                </section>
             </div>
 
 		</div>
@@ -101,7 +249,10 @@
 			Reveal.initialize({
 				center: false,
 				transition: 'fade',
-                history: true
+                history: true,
+                dependencies: [
+                    { src: '../reveal/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+                ]
 			});
 		</script>
 
