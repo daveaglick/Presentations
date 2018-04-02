@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Intro To Blazor</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="../reveal/css/reveal.css">
+        <link rel="stylesheet" href="../reveal/css/theme/white.css" id="theme">
+        <style>
+            img {
+                border: none !important;
+                box-shadow: none !important;
+            }
+        </style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+
+				<section>
+                    <h1>Intro To Blazor</h1>
+                    <p>Dave Glick</p>
+                    <p>Twitter: @daveaglick</p>
+                    <p>GitHub: /daveaglick</p>
+				</section>
+
+				<section>
+                    <h2>What Is Blazor?</h2>
+                    <blockquote>"Blazor is an experimental .NET web framework using C#/Razor and HTML that runs in the browser with WebAssembly"</blockquote>
+                    <p>https://github.com/aspnet/Blazor</p>
+                </section>
+                
+                <section>
+                    <h2>What Is WebAssembly?</h2>
+                    <blockquote>"WebAssembly (abbreviated Wasm) is a binary instruction format for a stack-based virtual machine."</blockquote>
+                </section>
+
+                <section>
+                    <h2>Blazor Architecture *</h2>
+                    <ul>
+                        <li>The Mono C runtime is compiled to WebAssembly</li>
+                        <li>The Mono IL interpreter is used to evaluate .NET assemblies</li>
+                        <li>Blazor files are compiled to normal .NET assemblies</li>
+                    </ul>
+                    <p>* Subject to change</p>
+                </section>
+
+                <section>
+                    <h2>How JavaScript Works</h2>
+                    <img src="js.svg">
+                </section>
+
+                <section>
+                    <h2>How WebAssembly Works</h2>
+                    <img src="webassembly.svg">
+                </section>
+                
+                <section>
+                    <h2>How Blazor Works</h2>
+                    <img src="blazor.svg">
+                </section>
+                
+                <section>
+                        <h2>JavaScript Interop: Events</h2>                    
+                        <p>To handle a button click...</p>                        
+                        <ul>
+                            <li>The Mono WebAssembly bootstrapper (mono.js) registers a click event handler</li>
+                            <li>The JS click event is handled by mono.js and passed to the Mono WebAssembly runtime</li>
+                            <li>The Mono WebAssembly runtime then exposes the event for any .NET handlers like Blazor</li>
+                        </ul>
+                    </section>
+
+                <section>
+                    <h2>JavaScript Interop: Rendering</h2>                    
+                    <ul>
+                        <li>Blazor maintains a virtual DOM                            
+                            <ul>
+                                <li>Only the changes are propagated to the browser DOM</li>
+                                <li>Similar to Vue.js or React</li>
+                            </ul>
+                        </li>
+                        <li>The Blazor bootstrapper (blazor.js) contains a rendering callback</li>
+                        <li>Blazor pages invoke the callback with required DOM changes</li>
+                    </ul>
+                </section>
+            </div>
+
+		</div>
+
+		<script src="../reveal/lib/js/head.min.js"></script>
+		<script src="../reveal/js/reveal.js"></script>
+
+		<script>
+			Reveal.initialize({
+				center: false,
+				transition: 'fade',
+                history: true
+			});
+		</script>
+
+	</body>
+</html>
