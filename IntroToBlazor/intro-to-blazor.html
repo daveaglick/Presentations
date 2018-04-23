@@ -338,17 +338,75 @@
                 
                 <section>
                     <h2>Event Handling</h2>
-                    <p>TODO</p>
+                    <p>Method</p>
+                    <pre><code class="html" data-trim>
+                        &lt;button onclick="@OnClick" /&gt;
+                        @functions {
+                            void OnClick(UIMouseEventArgs e)
+                            {
+                                // ...
+                            }
+                        }
+                    </code></pre>
+                    <p>Inline</p>
+                    <pre><code class="html" data-trim>
+                        &lt;button onclick="@(e => Console.WriteLine("hello, world"))" /&gt;
+                    </code></pre>
                 </section>
                     
                 <section>
                     <h2>Data Binding</h2>
-                    <p>TODO</p>
+                    <p>Using the <code>bind</code> attribute</p>                    
+                    <pre><code class="html" data-trim>
+                        &lt;input bind="@CurrentValue" /&gt;
+                        @functions {
+                            public string CurrentValue { get; set; }
+                        }
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Binding To Components</h2>
+                    <p>Component (in <code>Counter.cshtml</code>)</p>                    
+                    <pre><code class="html" data-trim>
+                        &lt;div&gt;...&lt;/div&gt;
+                        @functions {
+                            public int Value { get; set; };
+                        }
+                    </code></pre>
+                    <p>Binding to component with <code>bind-</code></p>                    
+                    <pre><code class="html" data-trim>
+                        &lt;Counter bind-Value="@CurrentValue" /&gt;
+                        @functions {
+                            public int CurrentValue { get; set; }
+                        }
+                    </code></pre>
                 </section>
                     
                 <section>
                     <h2>JavaScript Interop Redux</h2>
-                    <p>TODO</p>
+                    <p>Register a function with Blazor (in JavaScript)</p>                            
+                    <pre><code class="js" data-trim>
+                        Blazor.registerFunction(
+                            'MyPrompt',
+                            function (message) {
+                                return prompt(message, 'Type here');
+                            });
+                    </code></pre>
+                    <p>Helper to invoke the registered JavaScript function (generic parameter is return type)</p>                                       
+                    <pre><code class="csharp" data-trim>
+                        public class JsFunctions
+                        {
+                            public static string Prompt(string message) =>
+                                RegisteredFunction.Invoke&lt;string&gt;("MyPrompt", message);
+                        }
+                    </code></pre>
+                    <p>Use it</p>                                       
+                    <pre><code class="csharp" data-trim>
+                        // ...
+                        JsFunctions.Prompt("+1!");
+                        // ...
+                    </code></pre>
                 </section>
 
                 <section>
