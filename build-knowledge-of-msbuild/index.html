@@ -18,7 +18,13 @@
                 margin-left: 20px;
             }
             h1, h2, h3, h4, h5, h6 {
-                background-color: rgba(255, 255, 255, 0.7);
+                background-color: rgba(255, 255, 255, 0.8);
+            }
+            code {
+                background-color: #ddd;
+            }
+            ul {
+                width: 100%;
             }
             .reveal img {
                 border: none !important;
@@ -69,9 +75,18 @@
                     </script>
                 </section>
                 
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:" data-background-image="blackbox.jpg">            
+                    <script type="text/template">
+                        ## What Developers Think MSBuild Is
+
+                        Notes:
+                        It's mostly a black box, you hit "build" in Visual Studio and it works.
+                    </script>
+                </section>
+                
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:" data-background-image="machine.jpg">            
                     <script type="text/template">
-                        ## What Developers Think MSBuild Does
+                        ## What Developers Think Is Inside The Box
 
                         Notes:
                         One large universal build machine. Code goes in one end, libraries and applications come out the other.
@@ -80,7 +95,7 @@
                 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:" data-background-image="shop.jpg"> 
                     <script type="text/template">
-                        ## What MSBuild Actually Does
+                        ## What's Actually Inside The Box
 
                         Notes:
                         A lot of moving parts. Loose coordination. It's amazing anything actually gets built.
@@ -113,6 +128,7 @@
                         - Generic tasks like [Message](https://docs.microsoft.com/en-us/visualstudio/msbuild/message-task)
                         - A collection of [reserved and well-known properties](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-reserved-and-well-known-properties) related to building .NET projects
                         - [An API](https://www.nuget.org/packages?q=microsoft.build) for evaluating and executing MSBuild files
+                        - A console application (`MSBuild.exe`)
 
                         Notes:
                         - Declaritive because there's no control flow
@@ -126,7 +142,6 @@
                         It's not...
                         - .NET-specific build tasks ([.NET SDK](https://github.com/dotnet/sdk))
                         - A compiler ([Roslyn](https://github.com/dotnet/roslyn))
-                        - A command-line application ([dotnet cli](https://github.com/dotnet/cli))
 
                         Notes:
                         - Important to define a scope around MSBuild
@@ -149,15 +164,12 @@
 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
-                        # Building Blocks
-                    </script>
-                </section>
+                        # Project File Building Blocks
 
-                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
-                    <script type="text/template">
-                        # Types
+                        ![](project-file.png)
 
-                        properties vs. items
+                        Notes:
+                        - We'll talk about all these parts
                     </script>
                 </section>
                 
@@ -165,20 +177,144 @@
                     <script type="text/template">
                         # Variables
 
-                        global state
+                        - All variables are "global"
+                        - I just lied to you...
+                          - Execution starts with a set of variables
+                          - That set is copied to each target
+                          - Any changes target makes to the local set are merged back when it's done
+
+                        Notes:
+                        - Essentially the same, but subtle effects so worth understanding
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Types
+
+                        There are only two types:
+
+                        - `string`  
+                          (represented as a _property_)
+                        
+                        - `List<Tuple<string, Dictionary<string, string>>>`  
+                          (represented as an _item_)
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Properties
+
+                        - Defined in a `<PropertyGroup>`
+                        ```xml
+                        <PropertyGroup>
+                            <Name>value</Name>
+                        </PropertyGroup>
+                        ```
+                        - Is similar to
+                        ```csharp
+                        string Name = "value";
+                        ```
+                    </script>
+                </section>                
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Using Properties
+
+                        - Uses `$(Name)` syntax
+                        ```xml
+                        <PropertyGroup>
+                            <PaintColor>red</PaintColor>
+                            <WallColor>$(PaintColor)</WallColor>
+                        </PropertyGroup>
+                        ```
+                        - Is similar to
+                        ```csharp
+                        string PaintColor = "red";
+                        string WallColor = PaintColor;
+                        ```
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Items
+
+                        - Typically refers to files/paths (with special support for wildcards, etc.)
+                        - `Include` attribute defines values in the collection (`;` delimited)
+                        - `Exclude` attribute filters _the local `Include` attribute_
+                        - `Remove` removes _existing_ values from the collection
+                        - Each value can have metadata (usually defined as child elements)
+                        - Each definition refines the existing variable
+
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Items
+
+                        - Defined in an `<ItemGroup>`
+                        ```xml
+                        <ItemGroup>
+                            <Garage Include="bay-one" />
+                            <Garage Include="bay-two;bay-three">
+                                <Usage>Toys</Usage>
+                            </Garage>
+                            <Garage Include="bay-four">
+                                <Usage>Car</Usage>
+                                <Make>Hyundai</Make>
+                            </Garage>
+                        </ItemGroup>
+                        ```
+                        - Is similar to
+                        ```csharp
+                        var Garage = new List<Tuple<string, Dictionary<string, string>>>();
+                        Garage.Add(Tuple.Create("bay-one", new Dictionary<string, string>()));
+                        Garage.Add(Tuple.Create("bay-two", new Dictionary<string, string>
+                        {
+                            { "Usage", "Toys" }
+                        }));
+                        Garage.Add(Tuple.Create("bay-three", new Dictionary<string, string>
+                        {
+                            { "Usage", "Toys" }
+                        }));
+                        Garage.Add(Tuple.Create("bay-four", new Dictionary<string, string>
+                        {
+                            { "Usage", "Car" }
+                            { "Make", "Hyundai" }
+                        }));
+                        ```
+
+                    </script>
+                </section>       
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Using Items
+
+                        - Uses `@(Name)` syntax
+                        ```xml
+                        <PropertyGroup>
+                            <Garage Include="bay-one" />
+                            <Locations Include="@(Garage)" />
+                        </PropertyGroup>
+                        ```
+                        - Is similar to
+                        ```csharp
+                        var Garage = new List<Tuple<string, Dictionary<string, string>>>();
+                        Garage.Add(Tuple.Create("bay-one", new Dictionary<string, string>()));
+                        var Locations = new List<Tuple<string, Dictionary<string, string>>>();
+                        Locations.AddRange(Garage);
+                        ```
                     </script>
                 </section>
 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
                         # Conditions
-
-                    </script>
-                </section>
-
-                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
-                    <script type="text/template">
-                        # Imports
 
                     </script>
                 </section>
@@ -209,8 +345,29 @@
                     <script type="text/template">
                         # Dependencies
 
+                        task and target dependencies
+                        DependsOn
                     </script>
                 </section>  
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Imports
+
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # `.targets` vs. `.props`
+
+                        - No technical difference, filename doesn't matter
+                        - Both intended to be used as imports
+                        - By convention...
+                          - `.props` contains property and/or item definitions
+                          - `.targets` contains target definitions
+                    </script>
+                </section>
 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
@@ -238,6 +395,30 @@
                         structured log viewer
                     </script>
                 </section>  
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Tools I Maintain
+
+                        MsBuildPipeLogger
+                        Buildalyzer
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Where To Learn More
+
+                        - [MSBuild Concepts](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-concepts)
+                        - [Understanding The Project File](https://docs.microsoft.com/en-us/aspnet/web-forms/overview/deployment/web-deployment-in-the-enterprise/understanding-the-project-file)
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        ## Questions?
+                    </script>
+                </section>
                 
                 <!-- Markdown section template - make sure there are no spaces after the <script> element or it won't render as markdown
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
