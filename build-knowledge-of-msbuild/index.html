@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Build Your Knowledge Of MSBuild</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="../reveal/css/reveal.css">
+        <link rel="stylesheet" href="../reveal/css/theme/white.css" id="theme">
+        <link rel="stylesheet" href="../reveal/lib/css/zenburn.css" id="theme">
+
+        <style>
+            .reveal .slides > section {
+                width: calc(100% - 40px);
+                margin-left: 20px;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                background-color: rgba(255, 255, 255, 0.7);
+            }
+            .reveal img {
+                border: none !important;
+                box-shadow: none !important;
+                max-width: 60vw;
+                max-height: 60vw;
+            }
+            .left {
+                left:-8.33%;
+                text-align: left;
+                float: left;
+                width:48%;
+                z-index:-10;
+            }
+            .right {
+                left:31.25%;
+                top: 75px;
+                text-align: left;
+                float: right;
+                z-index:-10;
+                width:50%;
+            }
+        </style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+
+				<section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Build Your Knowledge Of MSBuild
+                        
+                        Dave Glick
+                        
+                        Twitter: **@daveaglick**
+
+                        GitHub: **/daveaglick**
+                    </script>
+                </section>
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">       
+                    <script type="text/template">
+                        # Sponsors
+                        
+                        ![](sponsors.png)
+                    </script>
+                </section>
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:" data-background-image="machine.jpg">            
+                    <script type="text/template">
+                        ## What Developers Think MSBuild Does
+
+                        Notes:
+                        One large universal build machine. Code goes in one end, libraries and applications come out the other.
+                    </script>
+                </section>
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:" data-background-image="shop.jpg"> 
+                    <script type="text/template">
+                        ## What MSBuild Actually Does
+
+                        Notes:
+                        A lot of moving parts. Loose coordination. It's amazing anything actually gets built.
+                    </script>
+                </section>    
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # What Is MSBuild?
+
+                        It's XML!
+
+                        ```
+                        <Project Sdk="Microsoft.NET.Sdk">
+                            <PropertyGroup>
+                                <OutputType>Exe</OutputType>
+                                <TargetFramework>netcoreapp2.2</TargetFramework>
+                            </PropertyGroup>
+                        </Project>
+                        ```
+                    </script>
+                </section>       
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # What Is MSBuild, Really?
+
+                        It's...
+                        - A declaritive language for describing build tasks
+                        - Generic tasks like [Message](https://docs.microsoft.com/en-us/visualstudio/msbuild/message-task)
+                        - A collection of [reserved and well-known properties](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-reserved-and-well-known-properties) related to building .NET projects
+                        - [An API](https://www.nuget.org/packages?q=microsoft.build) for evaluating and executing MSBuild files
+
+                        Notes:
+                        - Declaritive because there's no control flow
+                    </script>
+                </section>                  
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # What MSBuild Is Not
+
+                        It's not...
+                        - .NET-specific build tasks ([.NET SDK](https://github.com/dotnet/sdk))
+                        - A compiler ([Roslyn](https://github.com/dotnet/roslyn))
+                        - A command-line application ([dotnet cli](https://github.com/dotnet/cli))
+
+                        Notes:
+                        - Important to define a scope around MSBuild
+                        - SDK tasks include NuGet restore, calling the compiler, etc.
+                    </script>
+                </section>  
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # The [.NET Project System](https://github.com/dotnet/project-system)
+
+                        ![](project-system.png)
+
+                        Notes:
+                        - A set of interconnected services to manage projects, builds, IDEs, etc.
+                        - We're going to focus on MSBuild specifically (though I may mention parts of the project system)
+                        - All the overlaps may not have functionality, but you get the idea
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Building Blocks
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Types
+
+                        properties vs. items
+                    </script>
+                </section>
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Variables
+
+                        global state
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Conditions
+
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Imports
+
+                    </script>
+                </section>
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Targets
+
+                    </script>
+                </section>
+                    
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Tasks
+
+                    </script>
+                </section>                
+                    
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Common Tasks
+
+                        message, etc.
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Dependencies
+
+                    </script>
+                </section>  
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Types Of Builds
+
+                        design-time vs. compile-time
+                        different dependencies
+                    </script>
+                </section>  
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Logging
+
+                        binlog
+                        other loggers
+                    </script>
+                </section>  
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Debugging Tools
+
+                        logging builds in VS
+                        structured log viewer
+                    </script>
+                </section>  
+                
+                <!-- Markdown section template - make sure there are no spaces after the <script> element or it won't render as markdown
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+
+                    </script>
+                </section>
+                -->
+
+            </div>
+		</div>
+
+		<script src="../reveal/js/reveal.js"></script>
+
+		<script>
+			Reveal.initialize({
+                width: "100%",
+                height: "100%",
+                margin: 0,
+                minScale: 1,
+                maxScale: 1,
+				center: true,
+				transition: 'fade',
+                history: true,
+                dependencies: [		
+                    // Interpret Markdown in <section> elements
+                    { src: '../reveal/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: '../reveal/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+
+                    // Syntax highlight for <code> elements
+                    { src: '../reveal/plugin/highlight/highlight.js', async: true },
+
+                    // Zoom in and out with Alt+click
+                    { src: '../reveal/plugin/zoom-js/zoom.js', async: true },
+
+                    // Speaker notes
+                    { src: '../reveal/plugin/notes/notes.js', async: true },
+                ]
+			});
+		</script>
+
+	</body>
+</html>
