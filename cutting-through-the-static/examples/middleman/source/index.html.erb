@@ -1,0 +1,56 @@
+<div class="row">
+    <div class="12u">
+
+        <!-- Characters -->
+            <section>
+                <header class="major">
+                    <h2>Characters</h2>
+                </header>
+                <div class="row">
+                <% data.characters.each do |character| %>
+                    <div class="4u">
+                        <section class="box">
+                            <span class="image featured"><img src="<%= character.image %>" alt="" /></span>
+                            <header>
+                                <h3><%= character.name %></h3>
+                            </header>
+                            <p><%= character.description %></p>
+                        </section>
+                    </div>
+                <% end %>
+                </div>
+            </section>
+
+    </div>
+</div>
+<div class="row">
+    <div class="12u">
+
+        <!-- Blog -->
+            <section>
+                <header class="major">
+                    <h2>Recent Episodes</h2>
+                </header>
+                <div class="row">
+                <% blog.articles[0...2].each do |article| %>
+                    <div class="6u">
+                        <section class="box">
+                            <a href="<%= article.url %>" class="image featured"><img src="<%= article.data[:banner] %>" alt="" /></a>
+                            <header>
+                                <h3><%= article.title %></h3>
+                                <p>Posted <%= article.date.strftime('%b %-d, %Y') %></p>
+                            </header>
+                            <p><%= article.summary %></p>
+                            <footer>
+                                <ul class="actions">
+                                    <li><a href="<%= article.url %>" class="button icon fa-file-text">Continue Reading</a></li>
+                                </ul>
+                            </footer>
+                        </section>
+                    </div>
+                <% end %>
+                </div>
+            </section>
+
+    </div>
+</div>

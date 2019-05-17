@@ -1,0 +1,10 @@
+E:\Code\NovaCodeCampVue\bin\Debug\netcoreapp2.0\NovaCodeCampVue.deps.json
+E:\Code\NovaCodeCampVue\bin\Debug\netcoreapp2.0\NovaCodeCampVue.runtimeconfig.json
+E:\Code\NovaCodeCampVue\bin\Debug\netcoreapp2.0\NovaCodeCampVue.runtimeconfig.dev.json
+E:\Code\NovaCodeCampVue\bin\Debug\netcoreapp2.0\NovaCodeCampVue.dll
+E:\Code\NovaCodeCampVue\bin\Debug\netcoreapp2.0\NovaCodeCampVue.pdb
+E:\Code\NovaCodeCampVue\obj\Debug\netcoreapp2.0\NovaCodeCampVue.csproj.CoreCompileInputs.cache
+E:\Code\NovaCodeCampVue\obj\Debug\netcoreapp2.0\NovaCodeCampVue.AssemblyInfoInputs.cache
+E:\Code\NovaCodeCampVue\obj\Debug\netcoreapp2.0\NovaCodeCampVue.AssemblyInfo.cs
+E:\Code\NovaCodeCampVue\obj\Debug\netcoreapp2.0\NovaCodeCampVue.dll
+E:\Code\NovaCodeCampVue\obj\Debug\netcoreapp2.0\NovaCodeCampVue.pdb

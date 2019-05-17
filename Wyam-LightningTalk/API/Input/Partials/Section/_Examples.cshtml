@@ -1,8 +1,0 @@
-@{
-	string examples = Model.String("ExampleHtml");
-}
-@if(!string.IsNullOrWhiteSpace(examples))
-{
-	<h2>Examples</h2>
-	<div>@Html.Raw(examples)</div>
-}

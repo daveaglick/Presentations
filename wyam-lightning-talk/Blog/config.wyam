@@ -1,0 +1,127 @@
+Packages
+	.Install("Twitter.Bootstrap.Less", "[3.3.5]")
+	.Install("FluentBootstrap.Wyam", "[3.3.5.1-beta]", true)
+	.Install("jQuery", "[2.1.1]");
+
+Assemblies
+    .Load("System.ServiceModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")
+    .Load("System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+
+===
+
+using FluentBootstrap;
+using FluentBootstrap.Wyam;
+using FluentBootstrap.Buttons;
+using Wyam.Modules.Razor.Microsoft.AspNet.Mvc.Rendering;
+
+public abstract class RazorPage : BaseRazorPage
+{
+    public WyamBootstrapHelper Bs
+	{
+		get { return Html.Bootstrap(); }
+	}
+}
+
+public static class HtmlHelperExtensions
+{
+    public static ComponentBuilder<WyamBootstrapConfig, LinkButton> TagButton(this HtmlHelper helper, string tag, int? count = null, ButtonState buttonState = ButtonState.Default)
+    {
+        return helper.Bootstrap().LinkButton(
+            string.Format(" {0}{1}", tag, count == null ? string.Empty : string.Format(" <span class='badge'>{0}</span>", count)), 
+            	@"/" + GetTagLink(tag))
+            .SetState(buttonState)
+            .SetSize(ButtonSize.Sm);
+    }
+	
+	public static string GetTagLink(string tag)
+	{
+		if(tag.StartsWith("."))
+		{
+		    tag = tag.Substring(1);
+		}
+		return @"tags/" + tag.ToLowerInvariant().Replace(' ', '-');
+	}
+	
+	public static HtmlString Code(this HtmlHelper helper, string code)
+    {
+        int num = 0;
+        string[] lines = code.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        if (lines.Length > 1)
+        {
+            num = lines
+                .Skip(1)
+                .Min(x =>
+                {
+                    int index = x.ToList().FindIndex(c => c != ' ');
+                    return index == -1 ? Int32.MaxValue : index;
+                });
+        }
+        string spaces = new String(' ', num);
+        code = code.Replace(Environment.NewLine + spaces, Environment.NewLine);
+        return new HtmlString(string.Format(@"<pre class='prettyprint'>{0}</pre>", helper.Raw(System.Net.WebUtility.HtmlEncode(code))));
+    }
+}
+
+---
+
+Pipelines.Add("Posts",
+	ReadFiles(@"posts\*.md"),
+	FrontMatter(Yaml()),
+	Markdown(),
+	Replace("<pre><code>", "<pre class=\"prettyprint\"><code>"),
+	Concat(
+		ReadFiles(@"posts\*.cshtml").Where(x => Path.GetFileName(x)[0] != '_' && Path.GetFileName(x) != "index.cshtml"),
+		FrontMatter(Yaml())		
+	),
+	Razor(typeof(RazorPage)),
+	Excerpt(),
+	Excerpt("div#post-content")
+		.SetMetadataKey("PostContent")
+		.GetOuterHtml(false),
+	WriteFiles(".html")
+);
+
+Pipelines.Add("Content",
+	ReadFiles("*.md").Where(x => !Path.GetDirectoryName(x).EndsWith("posts")),
+	FrontMatter(Yaml()),
+	Markdown(),
+	Replace("<pre><code>", "<pre class=\"prettyprint\"><code>"),
+	Concat(
+		ReadFiles("*.cshtml").Where(x => Path.GetFileName(x)[0] != '_' 
+			&& (!Path.GetDirectoryName(x).EndsWith("posts") || Path.GetFileName(x) == "index.cshtml")),
+		FrontMatter(Yaml())		
+	),
+	Razor(typeof(RazorPage)),
+	WriteFiles(".html")
+);
+
+Pipelines.Add("Tags",
+	ReadFiles(@"tags\index.cshtml"),
+	FrontMatter(),
+	Execute(@ctx.Documents
+		.Where(x => x.ContainsKey("Published") && x.ContainsKey("Tags"))
+    	.SelectMany(x => x.Get<string[]>("Tags"))
+		.Distinct()
+		.Select(x => @doc.Clone(new Dictionary<string, object>()
+		{ 
+		    { "Title", x },
+			{ "Tag", x }
+		}))),
+	Razor(typeof(RazorPage)),
+	WriteFiles(HtmlHelperExtensions.GetTagLink(@doc.String("Tag")) + ".html")
+);
+
+Pipelines.Add("Less",
+    ReadFiles("master.less"),
+    Concat(ReadFiles("clean-blog.less")),
+    Concat(ReadFiles("bootstrap.less")),
+    Less(),
+    WriteFiles(".css")
+);
+
+Pipelines.Add("Resources",
+	CopyFiles("*").Where(x =>
+		Path.GetExtension(x) != ".cshtml" 
+		&& Path.GetExtension(x) != ".md"
+		&& Path.GetExtension(x) != ".less")
+);

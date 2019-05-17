@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Intro To Blazor</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="../reveal/css/reveal.css">
+        <link rel="stylesheet" href="../reveal/css/theme/white.css" id="theme">
+        <link rel="stylesheet" href="../reveal/lib/css/zenburn-mark.css" id="theme">
+        <style>
+            pre code {
+                font-size: 80% !important;
+                line-height: 90% !important;
+            }
+            img {
+                border: none !important;
+                box-shadow: none !important;
+            }
+            #left {
+                left:-8.33%;
+                text-align: left;
+                float: left;
+                width:50%;
+                z-index:-10;
+            }
+
+            #right {
+                left:31.25%;
+                top: 75px;
+                float: right;
+                text-align: right;
+                z-index:-10;
+                width:50%;
+            }
+        </style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+
+				<section>
+                    <h1>Intro To Blazor</h1>
+                    <p>Dave Glick</p>
+                    <p>Twitter: @daveaglick</p>
+                    <p>GitHub: /daveaglick</p>
+				</section>
+
+				<section>
+                    <h2>What Is Blazor?</h2>
+                    <blockquote>"Blazor is an experimental .NET web framework using C#/Razor and HTML that runs in the browser with WebAssembly"</blockquote>
+                    <p>https://github.com/aspnet/Blazor</p>
+                    <p>Still experimental, everything in this presentation is subject to change</p>
+                </section>
+                
+                <section>
+                    <h2>What Is WebAssembly?</h2>
+                    <blockquote>"WebAssembly (abbreviated Wasm) is a binary instruction format for a stack-based virtual machine"</blockquote>
+                </section>
+
+                <section>
+                    <h2>Blazor Architecture</h2>
+                    <ul>
+                        <li>The Mono C runtime is compiled to WebAssembly</li>
+                        <li>The Mono IL interpreter is used to evaluate .NET assemblies</li>
+                        <li>Blazor files are compiled to normal .NET assemblies</li>
+                        <li>Templates based on Razor Pages</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>How JavaScript Works</h2>
+                    <img src="js.svg">
+                </section>
+
+                <section>
+                    <h2>How WebAssembly Works</h2>
+                    <img src="webassembly.svg">
+                </section>
+                
+                <section>
+                    <h2>How Blazor Works</h2>
+                    <img src="blazor.svg">
+                </section>
+
+                <section>
+                    <h2>Analogy</h2>
+                    <h3>React, Angular, Vue.js</h3>
+                    <p>Most of the "magic" is being done by WebAssembly and Mono, which are totally distinct from Blazor</p>
+                </section>
+                
+                <section>
+                        <h2>JavaScript Interop: Events</h2>                    
+                        <p>To handle a button click...</p>                        
+                        <ul>
+                            <li>The Mono WebAssembly bootstrapper (mono.js) registers a click event handler</li>
+                            <li>The JS click event is handled by mono.js and passed to the Mono WebAssembly runtime</li>
+                            <li>The Mono WebAssembly runtime then exposes the event for any .NET handlers like Blazor</li>
+                        </ul>
+                    </section>
+
+                <section>
+                    <h2>JavaScript Interop: Rendering</h2>                    
+                    <ul>
+                        <li>Blazor maintains a virtual DOM                            
+                            <ul>
+                                <li>Only the changes are propagated to the browser DOM</li>
+                                <li>Similar to Vue.js or React</li>
+                            </ul>
+                        </li>
+                        <li>The Blazor bootstrapper (blazor.js) contains a rendering callback</li>
+                        <li>Blazor pages invoke the callback with required DOM changes</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Getting Started: Prerequisites</h2>
+                    <ul>
+                        <li>.NET Core 2.1 preview</li>
+                        <li>Visual Studio 2017 15.7 preview (for VS support)</li>
+                        <li>ASP.NET Core Blazor Language Services (for VS support)</li>
+                        <li>Microsoft.AspNetCore.Blazor.Templates (for .NET Core templates)</li>
+                    </ul>
+                </section>                
+                
+                <section>
+                    <h2>Blazor 0.1.0 to 0.2.0 Highlights</h2>
+                    <ul>
+                        <li>Support for component libraries</li>
+                        <li>Better JavaScript interop</li>
+                        <li>New event handling syntax</li>
+                        <li>Improved data binding</li>
+                        <li>Conditional attribute rendering</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Blazor 0.2.0 to 0.3.0 Highlights</h2>
+                    <ul>
+                        <li>Bootstrap 4 templates</li>
+                        <li>Async event handlers</li>
+                        <li>New component lifecycle events</li>
+                        <li>Component and element refs</li>
+                        <li>Better encapsulation of component parameters</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h2>Visual Studio</h2>
+                    <p style="font-size: 50%">File -> New Project -> Web -> ASP.NET Core Web Application</p>
+                    <img src="vstemplate.png" style="width: 50%">
+                </section>
+
+                <section>
+                    <h2>CLI/Visual Studio Code</h2>
+                    <h4>Install The Templates</h4>
+                    <pre><code class="console dim" data-trim data-noescape>
+                        ><mark>dotnet new -i Microsoft.AspNetCore.Blazor.Templates</mark>
+                        Getting ready...
+                          Restoring packages for C:\Users\dglick\.templateengine\dotnetcli\v2.1.300-preview2-008533\scratch\restore.csproj...
+                          Installing Microsoft.AspNetCore.Blazor.Templates 0.2.1.
+                          Generating MSBuild file C:\Users\dglick\.templateengine\dotnetcli\v2.1.300-preview2-008533\scratch\obj\restore.csproj.nuget.g.props.
+                          Generating MSBuild file C:\Users\dglick\.templateengine\dotnetcli\v2.1.300-preview2-008533\scratch\obj\restore.csproj.nuget.g.targets.
+                          Restore completed in 3.61 sec for C:\Users\dglick\.templateengine\dotnetcli\v2.1.300-preview2-008533\scratch\restore.csproj.
+
+                        Templates                            Short Name        Language          Tags
+                        ----------------------------------------------------------------------------------------------
+                        ...
+                        <mark>Blazor (hosted in ASP.NET server)    blazorhosted      [C#]              Web/Blazor/Hosted</mark>
+                        <mark>Blazor Library                       blazorlib         [C#]              Web/Blazor/Library</mark>
+                        <mark>Blazor (standalone)                  blazor            [C#]              Web/Blazor/Standalone</mark>
+                        ...
+                    </code></pre>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>CLI/Visual Studio Code</h2>
+                        <h4>New Blazor App (Standalone)</h4>
+                        <pre><code class="console dim" data-trim data-noescape>
+                            <mark>dotnet new blazor -o BlazorApp1</mark>
+                            cd BlazorApp1
+                            dotnet run
+                        </code></pre>
+                        <p>Create a new Blazor client application using the template.</p>
+                    </section>
+                    
+                    <section>
+                        <h2>CLI/Visual Studio Code</h2>
+                        <h4>New Blazor App (Standalone)</h4>
+                        <pre><code class="console dim" data-trim data-noescape>
+                            dotnet new blazor -o BlazorApp1
+                            <mark>cd BlazorApp1
+                            dotnet run</mark>
+                        </code></pre>
+                        <p>Build and run the client application.</p>
+                    </section>
+                </section>
+                
+                <section>
+                    <section>
+                        <h2>CLI/Visual Studio Code</h2>
+                        <h4>New Blazor Component Library</h4>
+                        <pre><code class="console dim" data-trim data-noescape>
+                            <mark>dotnet new blazorlib -o BlazorLib1</mark>                     
+                            dotnet new blazor -o BlazorApp1
+                            dotnet add BlazorApp1 reference BlazorLib1
+                            cd BlazorApp1
+                            dotnet run
+                        </code></pre>
+                        <p>Create a new Blazor component library project using the template.</p>
+                    </section>
+                    
+                    <section>
+                        <h2>CLI/Visual Studio Code</h2>
+                        <h4>New Blazor Component Library</h4>
+                        <pre><code class="console dim" data-trim data-noescape>
+                            dotnet new blazorlib -o BlazorLib1                        
+                            <mark>dotnet new blazor -o BlazorApp1</mark>
+                            dotnet add BlazorApp1 reference BlazorLib1
+                            cd BlazorApp1
+                            dotnet run
+                        </code></pre>
+                        <p>Create a new Blazor client application to test and view the component.</p>
+                    </section>
+                    
+                    <section>
+                        <h2>CLI/Visual Studio Code</h2>
+                        <h4>New Blazor Component Library</h4>
+                        <pre><code class="console dim" data-trim data-noescape>
+                            dotnet new blazorlib -o BlazorLib1                        
+                            dotnet new blazor -o BlazorApp1
+                            <mark>dotnet add BlazorApp1 reference BlazorLib1</mark>
+                            cd BlazorApp1
+                            dotnet run
+                        </code></pre>
+                        <p>Add a reference from the application to the component library.</p>
+                    </section>
+                    
+                    <section>
+                        <h2>CLI/Visual Studio Code</h2>
+                        <h4>New Blazor Component Library</h4>
+                        <pre><code class="console dim" data-trim data-noescape>
+                            dotnet new blazorlib -o BlazorLib1                        
+                            dotnet new blazor -o BlazorApp1
+                            dotnet add BlazorApp1 reference BlazorLib1
+                            <mark>cd BlazorApp1
+                            dotnet run</mark>
+                        </code></pre>
+                        <p>Add the component to a page and then build and run the client application to see the component in action.</p>
+                    </section>
+                </section>
+
+                <section>
+                    <h2>Project File</h2>
+                    <pre><code class="xml dim" data-trim data-noescape>
+                        &lt;Project Sdk=&quot;Microsoft.NET.Sdk.Web&quot;&gt;
+                          &lt;PropertyGroup&gt;...&lt;/PropertyGroup&gt;
+                          &lt;ItemGroup&gt;
+                            <mark>&lt;PackageReference
+                              Include=&quot;Microsoft.AspNetCore.Razor.Design&quot;
+                              Version=&quot;2.1.0-preview2-final&quot;
+                              PrivateAssets=&quot;all&quot; /&gt;
+                            &lt;PackageReference
+                              Include=&quot;Microsoft.AspNetCore.Blazor.Browser&quot;
+                              Version=&quot;0.2.1&quot; /&gt;
+                            &lt;PackageReference
+                              Include=&quot;Microsoft.AspNetCore.Blazor.Build&quot;
+                              Version=&quot;0.2.1&quot; /&gt;
+                            &lt;DotNetCliToolReference
+                              Include=&quot;Microsoft.AspNetCore.Blazor.Cli&quot;
+                              Version=&quot;0.2.1&quot; /&gt;</mark>
+                          &lt;/ItemGroup&gt;                        
+                        &lt;/Project&gt;
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Packages</h2>
+                    <ul>
+                        <li><strong>Microsoft.AspNetCore.Razor.Design</strong><br/>Design-time support (Intellisense, etc.)</li>
+                        <li><strong>Microsoft.AspNetCore.Blazor.Browser</strong><br/>Blazor client framework to be deployed to browser</li>
+                        <li><strong>Microsoft.AspNetCore.Blazor.Build</strong><br/>SDK and other build tooling</li>
+                        <li><strong>Microsoft.AspNetCore.Blazor.Cli</strong><br/>The Blazor CLI</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>The Blazor CLI</h2>
+                    <p>Can be used to serve Blazor applications:</p>
+                    <pre><code class="console dim" data-trim data-noescape>
+                        <mark>dotnet blazor serve</mark>
+                        Hosting environment: Production
+                        Content root path: E:\Temp\blazor\BlazorApp1
+                        Now listening on: http://localhost:5000
+                        Application started. Press Ctrl+C to shut down.
+                    </code></pre>
+                    <p>More capabilities are planned</p>
+                </section>
+                
+                <section>
+                    <h2>What Does It Build?</h2>
+                    <div id="left">
+                        <img src="dist1.png">
+                    </div>
+                    <div id="right">
+                        <img src="dist2.png">
+                    </div>
+                </section>
+
+                <section>
+                    <h2>BlazorApp.dll</h2>
+                    <img src="assembly.png">
+                </section>
+
+                <section>
+                    <h2>index.html</h2>
+                    <pre><code class="html" data-trim>
+                            &lt;!DOCTYPE html&gt;
+                            &lt;html&gt;
+                                &lt;head&gt;
+                                    &lt;meta charset=&quot;utf-8&quot; /&gt;
+                                    &lt;title&gt;BlazorApp&lt;/title&gt;
+                                    &lt;base href=&quot;/&quot; /&gt;
+                                    &lt;link href=&quot;css/bootstrap/bootstrap.min.css&quot; rel=&quot;stylesheet&quot; /&gt;
+                                    &lt;link href=&quot;css/site.css&quot; rel=&quot;stylesheet&quot; /&gt;
+                                &lt;/head&gt;
+                                &lt;body&gt;
+                                    &lt;app&gt;Loading...&lt;/app&gt;
+                            
+                                    &lt;script src=&quot;css/bootstrap/bootstrap-native.min.js&quot;&gt;&lt;/script&gt;
+                                    &lt;script
+                                        src=&quot;_framework/blazor.js&quot;
+                                        main=&quot;BlazorApp.dll&quot;
+                                        entrypoint=&quot;BlazorApp.Program::Main&quot;
+                                        references=&quot;Microsoft.AspNetCore.Blazor.Browser.dll,Microsoft.AspNetCore.Blazor.dll,Microsoft.Extensions.DependencyInjection.Abstractions.dll,Microsoft.Extensions.DependencyInjection.dll,mscorlib.dll,netstandard.dll,System.Core.dll,System.Diagnostics.StackTrace.dll,System.dll,System.Globalization.Extensions.dll,System.Net.Http.dll,System.Runtime.Serialization.Primitives.dll,System.Security.Cryptography.Algorithms.dll&quot;
+                                        linker-enabled=&quot;true&quot;&gt;
+                                    &lt;/script&gt;
+                                &lt;/body&gt;
+                            &lt;/html&gt;
+                    </code></pre>
+                </section>
+                
+                <section>
+                    <h2>Event Handling</h2>
+                    <p>Method</p>
+                    <pre><code class="html" data-trim>
+                        &lt;button onclick="@OnClick" /&gt;
+                        @functions {
+                            void OnClick(UIMouseEventArgs e)
+                            {
+                                // ...
+                            }
+                        }
+                    </code></pre>
+                    <p>Inline</p>
+                    <pre><code class="html" data-trim>
+                        &lt;button onclick="@(e => Console.WriteLine("hello, world"))" /&gt;
+                    </code></pre>
+                </section>
+                    
+                <section>
+                    <h2>Data Binding</h2>
+                    <p>Using the <code>bind</code> attribute</p>                    
+                    <pre><code class="html" data-trim>
+                        &lt;input bind="@CurrentValue" /&gt;
+                        @functions {
+                            public string CurrentValue { get; set; }
+                        }
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Binding To Components</h2>
+                    <p>Component (in <code>Counter.cshtml</code>)</p>                    
+                    <pre><code class="html" data-trim>
+                        &lt;div&gt;...&lt;/div&gt;
+                        @functions {
+                            public int Value { get; set; };
+                        }
+                    </code></pre>
+                    <p>Binding to component with <code>bind-</code></p>                    
+                    <pre><code class="html" data-trim>
+                        &lt;Counter bind-Value="@CurrentValue" /&gt;
+                        @functions {
+                            public int CurrentValue { get; set; }
+                        }
+                    </code></pre>
+                </section>
+                    
+                <section>
+                    <h2>JavaScript Interop Redux</h2>
+                    <p>Register a function with Blazor (in JavaScript)</p>                            
+                    <pre><code class="js" data-trim>
+                        Blazor.registerFunction(
+                            'MyPrompt',
+                            function (message) {
+                                return prompt(message, 'Type here');
+                            });
+                    </code></pre>
+                    <p>Helper to invoke the registered JavaScript function (generic parameter is return type)</p>                                       
+                    <pre><code class="csharp" data-trim>
+                        public class JsFunctions
+                        {
+                            public static string Prompt(string message) =>
+                                RegisteredFunction.Invoke&lt;string&gt;("MyPrompt", message);
+                        }
+                    </code></pre>
+                    <p>Use it</p>                                       
+                    <pre><code class="csharp" data-trim>
+                        // ...
+                        JsFunctions.Prompt("+1!");
+                        // ...
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h1>Digging Deeper...</h1>
+                    <p>Time for some demos!</p>
+                </section>
+            </div>
+
+		</div>
+
+		<script src="../reveal/lib/js/head.min.js"></script>
+		<script src="../reveal/js/reveal.js"></script>
+
+		<script>
+			Reveal.initialize({
+				center: false,
+				transition: 'fade',
+                history: true,
+                dependencies: [
+                    { src: '../reveal/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+                ]
+			});
+		</script>
+
+	</body>
+</html>

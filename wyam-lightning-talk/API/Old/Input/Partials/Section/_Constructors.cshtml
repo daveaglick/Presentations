@@ -1,0 +1,12 @@
+@{
+	ViewData["DocsTable"] = new DocsTable
+	{
+		Docs = Model.Get<IReadOnlyList<IDocument>>("Constructors")
+			?.OrderBy(x => x["DisplayName"])
+			.ToList(),
+		Title = "Constructors",
+		Header = "Name",
+		HasSummary = true	
+	};
+	@Html.Partial("Partials\\Section\\_DocsTable");
+}
