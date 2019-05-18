@@ -316,6 +316,59 @@
                     <script type="text/template">
                         # Conditions
 
+                        - Defined as a `Condition` attribute that must evaluate to a string that can be parsed as a boolean
+                        - Can be defined on most elements
+                        - Supports a [variety of operators](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-conditions) like `==`, `!=`, `<`, `>`, `!`, etc.
+                        
+                        ```xml
+                        <PropertyGroup Condition="true">
+                            <Name>Clark Kent</Name>
+                            <IsUndercover>false</IsUndercover>
+                            <IsUndercover Condition="'$(Name)' == 'Clark Kent'">true</IsUndercover>
+                        </PropertyGroup>
+                        ```
+                        
+                        Notes:
+                        - A common pattern to redefine variables based on conditions
+                        - Notice the single quotes - not required for simple strings or boolean values, but safer to use
+                    </script>
+                </section>
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Conditional Choices
+
+                        - Outer `<Choose>` element
+                        - One or more `<When>` elements with `Condition` attributes
+                        - The first `<When>` that has a true `Condition` is used
+                        - A final `<Otherwise>` can be defined and will be used if no `<When>` elements are true
+                        - `<Choose>` elements can be nested inside `<When>` and `<Otherwise>`
+                        - `<When>` and `<Otherwise>` can also contain `<PropertyGroup>` and/or `<ItemGroup>` elements
+                    </script>
+                </section>
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Conditional Choices
+
+                        ```xml
+                        <Choose>
+                            <When Condition="'$(IsUndercover)'">
+                                <PropertyGroup>
+                                    <Uniform>Suit</Uniform>
+                                </PropertyGroup>
+                            </When>
+                            <Otherwise>
+                                <PropertyGroup>
+                                    <Uniform>Cape</Uniform>
+                                    <CapeColor>Red</CapeColor>
+                                <PropertyGroup>
+                            </Otherwise>
+                        </Choose>
+                        ```
+                        
+                        Notes:
+                        - Notice that CapeColor isn't defined unless the condition is false
                     </script>
                 </section>
                 
@@ -330,6 +383,7 @@
                     <script type="text/template">
                         # Tasks
 
+                        - Kind of like invoking a method
                     </script>
                 </section>                
                     
@@ -354,6 +408,26 @@
                     <script type="text/template">
                         # Imports
 
+                        - Defined with the `<Import>` element
+                        - The `Project` attribute contains a path to a MSBuild file to import
+                        - Relative paths are interpreted realative to the importing file
+                        - Can optional contain a `Condition` attribute
+                        - Can be grouped in a `<ImportGroup>` with it's own condition
+                        
+                        ```xml
+                        <Import Project="../CommonProps/my.props" />
+                        ```
+                    </script>
+                </section>
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Implicit Imports
+
+                        - `Directory.Build.props` is automatically imported if anywhere up the folder heirarchy
+                        - Also `Directory.Build.targets` (name difference is mostly conventional)
+                        
+                        TODO: Screen shot of Nick Craver tweet
                     </script>
                 </section>
 
