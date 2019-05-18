@@ -374,33 +374,102 @@
                 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
-                        # Targets
-
-                    </script>
-                </section>
-                    
-                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
-                    <script type="text/template">
                         # Tasks
 
-                        - Kind of like invoking a method
+                        - Defined in .NET assemblies using the MSBuild API `ITask` interface
+                        - Properties in the task class can be defined in the project file as attributes
+                        - Tasks return `true` on success and `false` on failure
+                        - Task code:
+                        ```csharp
+                        public class Drive : Task
+                        {
+                            public string Destination { get; set; }
+                            
+                            public string Method { get; set; }
+                            
+                            public override bool Execute()
+                            {
+                                return true;
+                            }
+                        }
+                        ```                 
+                        - Project file:
+                        ```xml
+                        <Project ...>
+                            <Target Name="NeedForSpeed">
+                                <Drive Method="Highway" Destination="Danger Zone" />
+                            </Target>
+                        </Project>
+                        ```       
                     </script>
-                </section>                
-                    
+                </section>
+                       
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
                         # Common Tasks
 
-                        message, etc.
+                        - `Copy` copies files to a new location
+                        - `Delete` deletes the specified files
+                        - `Error` stops a build and logs an error
+                        - `Exec` runs a program or command with arguments
+                        - `Message` logs a message during build
+                        - `Move` moves files
+                        - `Warning` logs a warning 
+                        
+                        Notes:
+                        - Demonstrate the message task
                     </script>
                 </section>
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Targets
+                        
+                        - Groups tasks in a specific order
+                        - Has a name
+                        - Can be redefined
+                        - Only runs once, even if multiple dependants
+                        - Supports incremental builds using `Inputs` and `Outputs` attributes
+
+                        Notes:
+                        - For incremental builds, target is skipped if all outputs are up to date
+                    </script>
+                </section>
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Target Ordering
+
+                        - `InitialTargets` attribute on `<Project>` are always run
+                        - `DefaultTargets` attribute on `<Project>` are run if no target specified
+                        - Target specified on the command line (or via API)
+                        ```
+                        msbuild -target:Clean;Build
+                        ```
+                        - If no initial, default, or command line target, first one in order (including imports) is run
+                        
+                        Notes:
+                        - Initial targets are run even if command line specifies others
+                        - All initial targets from imports are aggregated and run in sequence
+                    </script>
+                </section>  
 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
                         # Dependencies
 
-                        task and target dependencies
-                        DependsOn
+                        - `DependsOnTarget` attribute runs dependencies before the defined target
+                        ```xml
+                        <Target Name="DefeatLordGarmadon" DependsOnTargets="Train;Plan">
+                            ...
+                        </Target>
+                        ```
+                        - `BeforeTargets` and `AfterTargets` insert targets into the execution order
+                        ```xml
+                        <Target Name="Train" BeforeTargets="DefeatLordGarmadon;Plan">
+                            ...
+                        </Target>
+                        ```
                     </script>
                 </section>  
 
