@@ -374,11 +374,20 @@
                 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
-                        # Tasks
+                        # ⚡ Tasks
 
+                        - Elements in the project file that actually do stuff
+                        - Essentially a method invocation
                         - Defined in .NET assemblies using the MSBuild API `ITask` interface
                         - Properties in the task class can be defined in the project file as attributes
                         - Tasks return `true` on success and `false` on failure
+                    </script>
+                </section>
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Custom Tasks
+
                         - Task code:
                         ```csharp
                         public class Drive : Task
@@ -414,16 +423,13 @@
                         - `Exec` runs a program or command with arguments
                         - `Message` logs a message during build
                         - `Move` moves files
-                        - `Warning` logs a warning 
-                        
-                        Notes:
-                        - Demonstrate the message task
+                        - `Warning` logs a warning
                     </script>
                 </section>
                 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
-                        # Targets
+                        # 🎯 Targets
                         
                         - Groups tasks in a specific order
                         - Has a name
@@ -453,6 +459,14 @@
                         - All initial targets from imports are aggregated and run in sequence
                     </script>
                 </section>  
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Dependencies
+                        
+                        ![](machine.gif)
+                    </script>
+                </section>  
 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
@@ -470,6 +484,13 @@
                             ...
                         </Target>
                         ```
+
+                        Notes:
+                        - Show example of adding Message task in target in new console app
+                        - Create folder, open code, dotnet new console 
+                        - Omit Name on target first, show error message
+                        - Omit Importance, no output
+                        - Make Importance="High", show output
                     </script>
                 </section>  
 
@@ -495,14 +516,28 @@
 
                         - `Directory.Build.props` is automatically imported if anywhere up the folder heirarchy
                         - Also `Directory.Build.targets` (name difference is mostly conventional)
+                        - Stops looking at the first one found, need to explicity include higher ones
+
+                        Notes:
+                        - Helpful for things like common code analyzers, shared frameworks
+                    </script>
+                </section>
+                
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # ⚠ Be Careful
                         
-                        TODO: Screen shot of Nick Craver tweet
+                        ![](nick.png)
+
+                        Notes:
+                        - Can be difficult to diagnose behavior
                     </script>
                 </section>
 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
-                        # `.targets` vs. `.props`
+                        # 🤔 `.targets` vs. `.props`
 
                         - No technical difference, filename doesn't matter
                         - Both intended to be used as imports
@@ -516,26 +551,68 @@
                     <script type="text/template">
                         # Types Of Builds
 
-                        design-time vs. compile-time
-                        different dependencies
+                        - Global properties control which targets (and tasks) are run via conditions
+                        - Different "types" of builds: full, incremental, design-time
+                        - Each runs different targets
+                        - Design-time is what Visual Studio does in a tight loop, doesn't actually call the compiler
                     </script>
                 </section>  
 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
-                        # Logging
+                        # Console Logging
 
-                        binlog
-                        other loggers
+                        - Log messages are classified as `Quiet`, `Minimal`, `Normal`, `Detailed`, and `Diagnostic`
+                        - Set verbosity on the command line
+                        ```
+                        msbuild MySolution.sln -verbosity:detailed
+                        ```
+
+                        Notes:
+                        - Show -verbosity:detailed with sample console app, lots of output
                     </script>
                 </section>  
 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
-                        # Debugging Tools
+                        # Binary Logging
 
-                        logging builds in VS
-                        structured log viewer
+                        - Each definition, target and task entry/exit, and other activities generate log events
+                        - Binary logging records all events in a binary file
+                        ```
+                        msbuild MySolution.sln /bl:out.binlog
+                        ```
+                        - MSBuild can "replay" a binary log
+                        ```
+                        msbuild out.binlog
+                        ```
+
+                        Notes:
+                        - Replaying won't actually build, just send events to other loggers
+                        - Demonstrate replay on sample console app
+                    </script>
+                </section>  
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # 👀 Debugging Tools
+
+                        - [Project System Tools](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools)
+                        - [MSBuild Structured Log Viewer](http://www.msbuildlog.com/)
+
+                        Notes:
+                        - Open binlog from sample console app in previous slide
+                        - Show example by building in VS with logging and then opening in log viewer
+                    </script>
+                </section>  
+                
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
+                    <script type="text/template">
+                        # Using Programmatically
+
+                        - [MSBuild APIs](https://docs.microsoft.com/en-us/dotnet/api/?view=netframework-4.7.1&term=Microsoft.Build) are in the `Microsoft.Build` namespace and use that [package prefix](https://www.nuget.org/packages?q=microsoft.build)
+                        - [Microsoft.Build.Locator](https://github.com/Microsoft/MSBuildLocator) finds already installed MSBuild instances
+                        - [VSWhere](https://github.com/Microsoft/vswhere) finds installed versions of Visual Studio (which include MSBuild)
                     </script>
                 </section>  
 
@@ -543,8 +620,8 @@
                     <script type="text/template">
                         # Tools I Maintain
 
-                        MsBuildPipeLogger
-                        Buildalyzer
+                        - [MsBuildPipeLogger](https://github.com/daveaglick/MsBuildPipeLogger) sends MSBuild logging data over a pipe
+                        - [Buildalyzer](https://github.com/daveaglick/Buildalyzer) finds and executes MSBuild programmatically and returns results
                     </script>
                 </section>
 
@@ -559,7 +636,9 @@
 
                 <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Notes:">
                     <script type="text/template">
-                        ## Questions?
+                        ## ❓ Questions?
+
+                        ![](magic.gif)
                     </script>
                 </section>
                 
